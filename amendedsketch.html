@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>p5.js Canvas with Buttons</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <div id="app-container">
+      <div id="sidebar">
+        <button id="shapes-btn">Shapes</button>
+        <div id="shapes-menu" class="hidden">
+          <button onclick="drawCircle()">Draw Circle</button>
+          <button onclick="drawSquare()">Draw Square</button>
+          <button onclick="pencilDraw()">Pencil</button>
+          <!-- Add more tool options here -->
+        </div>
+        <button id="thickness-btn">Thickness</button>
+        <input
+          id="thickness-picker"
+          type="range"
+          min="1"
+          max="50"
+          value="1"
+          hidden
+        >
+        <button id="colour-btn">Colour</button>
+        <input type="color" id="colour-picker" hidden />
+        <button>Symmetry</button>
+        <button>Textures</button>
+        <button onclick="clearCanvas()">Clear Canvas</button>
+      </div>
+      <button onclick="saveCanvasImage()">Save Canvas Image</button>
+      <div id="canvas-container">
+        <!-- The canvas will be attached here -->
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+      </div>
+      <div id="history-section">
+        <!-- Add history and suggestions section here -->
+      </div>
+    </div>
+    <div id="mouse-position">Mouse position:</div>
+
+    <script src="sketch.js"></script>
+  </body>
+</html>
