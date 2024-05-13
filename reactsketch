@@ -1,0 +1,67 @@
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import p5 from 'p5';
+
+function Sketch() {
+  // State to store p5.js instance
+  const [sketch, setSketch] = useState(null);
+
+  useEffect(() => {
+    // Function to define p5.js sketch
+    const sketchFunction = (p) => {
+      let drawing = false;
+
+      p.setup = () => {
+        p.createCanvas(400, 400);
+        p.background(255);
+      };
+
+      p.draw = () => {
+        if (drawing) {
+          p.stroke(0);
+          p.strokeWeight(4);
+          p.line(p.mouseX, p.mouseY, p.pmouseX, p.pmouseY);
+        }
+      };
+
+      p.mousePressed = () => {
+        drawing = true;
+      };
+
+      p.mouseReleased = () => {
+        drawing = false;
+      };
+    };
+
+    // Create new p5.js instance
+    const newSketch = new p5(sketchFunction);
+
+    // Save the p5.js instance in state
+    setSketch(newSketch);
+
+    // Clean up function to remove the sketch when component unmounts
+    return () => {
+      newSketch.remove();
+    };
+  }, []);
+
+  // Event handler for clearing the canvas
+  const clearCanvas = () => {
+    if (sketch) {
+      sketch.clear();
+      sketch.background(255);
+    }
+  };
+
+  // Render the UI
+  return (
+    <div>
+      <div>
+        <button onClick={clearCanvas}>Clear Canvas</button>
+      </div>
+      <div id="canvas-container"></div>
+    </div>
+  );
+}
+
+ReactDOM.render(<Sketch />, document.getElementById('app'));

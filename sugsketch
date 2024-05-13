@@ -1,0 +1,88 @@
+function generateThumbnailWithSuggestion(suggestion, command) {
+  // Create off-screen canvas in p5.js
+  let offScreenCanvas = createGraphics(canvas.width, canvas.height);
+  for (let i = 0; i <drawingCmds.length; i++) {
+    drawThumbnailCommand(offScreenCanvas, drawingCmds[i]);
+  }
+  applySuggestion(offScreenCanvas, suggestion, command);
+  let thumbnailSrc = offScreenCanvas.elt.toDataURL();
+  let thumbnailElement = document.createElement("img");
+  thumbnailElement.src = thumbnailSrc;
+  thumbnailElement.addEventListener("click", () => applySuggestion(suggestion));
+  return thumbnailElement;
+}
+
+function generateDrawingSuggestions(drawingCommands, command) {
+  // Analyze previous drawings and generate suggestions
+  let suggestions = [];
+
+  // Analyze the types of shapes and their properties
+  let shapeCounts = {};
+  drawingCommands.forEach((command) => {
+    let type = command.type;
+    if (!shapeCounts[type]) {
+      shapeCounts[type] = 1;
+    } else {
+      shapeCounts[type]++;
+    }
+  });
+
+  // Generate suggestions based on the analysis
+  for (let type in shapeCounts) {
+    let count = shapeCounts[type];
+    if (count >= 2) {
+      // If a shape has been drawn multiple times, suggest drawing another one
+      let newCommand = {
+        type: type,
+        x: random(width),
+        y: random(height),
+        size: 30,
+        color: command.color,
+        strokeWeightVal: 1,
+      };
+      suggestions.push(newCommand);
+    }
+    // You can add more complex logic here based on the properties of shapes
+  }
+  return suggestions;
+}
+
+function displaySuggestionsThumbnails(suggestions, command) {
+  let suggestionsThumbnails = document.getElementById("suggestions-thumbnails");
+  suggestionsThumbnails.innerHTML = ""; // Clear previous thumbnails
+  suggestions.forEach((suggestion, index) => {
+    // Corrected syntax here
+    let thumbnail = generateThumbnailWithSuggestion(suggestion, command);
+    thumbnail.addEventListener("click", () => applySuggestion(suggestion, command));
+    suggestionsThumbnails.appendChild(thumbnail);
+  });
+}
+
+function applySuggestion(suggestion, command) {
+  // Apply the suggestion
+  // For example, if the suggestion is "draw a purple square", draw a purple square onto the canvas
+  // Modify this part according to your suggestion logic
+  console.log("Applying suggestion:", suggestion);
+  console.log("Drawing command:", command);
+  drawThumbnailCommand(command);
+}
+
+
+function drawThumbnailCommand(offScreenCanvas, command) {
+  console.log("drawthumbnailcommand command:", command);
+  console.log("drawthumbnailcommand colour:", command.color);
+  offScreenCanvas.fill(command.color);
+  offScreenCanvas.strokeWeight(command.strokeWeightVal);
+  if (command.type == "circle") {
+    offScreenCanvas.circle(command.x, command.y, command.size);
+  } else if (command.type == "square") {
+    offScreenCanvas.rect(command.x, command.y, command.size, command.size);
+  } else if (command.type == "line") {
+    offScreenCanvas.line(command.x1, command.y1, command.x2, command.y2);
+  } else if (command.type == "clear") { // Corrected syntax here
+    offScreenCanvas.clearCanvas();
+  }
+}
+
+window.generateDrawingSuggestions = generateDrawingSuggestions;
+window.applySuggestion = applySuggestion;

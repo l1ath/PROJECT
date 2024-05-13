@@ -1,5 +1,6 @@
 let canvas;
 let drawingCmds = []; // array to store drawing cmds
+let gifFrames = [];
 let undoStack = []; //undo stack
 let redoStack = []; //redo stack
 let mousePos = null;
@@ -202,5 +203,46 @@ window.clearCanvas = function () {
 };
 
 function saveCanvasImg() {
-  let canvasImage = canvas.elt.toDataURL();
+  saveCanvas(canvas, "myCanvas", "png");
 };
+
+function saveCanvasGif() {
+  const gif = new GIF({
+    workers: 2,
+    quality: 10,
+    width: canvas.width,
+    height: canvas.height
+  });
+
+  // Function to draw each command and add it as a frame to the GIF
+  function drawFrame() {
+    // Loop through each command
+    for (let i = 0; i < drawingCmds.length; i++) {
+      let command = drawingCmds[i];
+      // Clear the canvas
+      background(240);
+      // Draw all commands up to the current one
+      for (let j = 0; j <= i; j++) {
+        let cmd = drawingCmds[j];
+        fill(cmd.color);
+        strokeWeight(cmd.strokeWeightVal);
+        if (cmd.type == "circle") {
+          circle(cmd.x, cmd.y, cmd.size);
+        } else if (cmd.type == "square") {
+          rect(cmd.x, cmd.y, cmd.size, cmd.size);
+        }
+      }
+      // Add the current canvas content as a frame to the GIF
+      gif.addFrame(canvas.elt, { copy: true, delay: 100 });
+    }
+  }
+
+  // Draw each frame
+  drawFrame();
+
+  // Render the GIF and open it in a new tab when finished
+  gif.on('finished', function(blob) {
+    window.open(URL.createObjectURL(blob));
+  });
+  gif.render();
+}
