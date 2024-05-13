@@ -214,7 +214,7 @@ function saveCanvasGif() {
     height: canvas.height
   });
 
-  // Function to draw each command and add it as a frame to the GIF
+
   function drawFrame() {
     // Loop through each command
     for (let i = 0; i < drawingCmds.length; i++) {
