@@ -25,7 +25,7 @@ class Pencil {
       x2: x2,
       y2: y2,
       color: colour,
-      strokeWeightVal: strokeWeightVal
+      strokeWeightVal: strokeWeightVal,
     };
     exeCmd(command); // Execute the command for undo/redo
   }
@@ -45,7 +45,7 @@ function setup() {
   canvas.parent("canvas-container");
   background(240);
   console.log("canvas setup finished");
-//button setup
+  //button setup
   select("#shapes-btn").mousePressed(toggleShapesMenu);
   select("#colour-btn").mousePressed(() => {
     select("#colour-picker").elt.click();
@@ -84,7 +84,7 @@ function getCurrentCanvasState() {
   return {
     drawingCmds: drawingCmds.slice(), //get copy of the drawing commands array
     colour: colour, // current color
-    strokeWeightVal: strokeWeightVal // current stroke weight
+    strokeWeightVal: strokeWeightVal, // current stroke weight
   };
 }
 
@@ -100,7 +100,7 @@ function exeCmd(command) {
   let prevState = getCurrentCanvasState(); //were about to change so we should save the current state to get prev
   undoStack.push(prevState); //store state before change for undo
   redoStack = []; //clear redo stack
-  drawCommand(command); 
+  drawCommand(command);
 }
 
 function redrawCanvas() {
@@ -167,7 +167,7 @@ window.drawCircle = function () {
       y: mousePos.y,
       size: 50,
       color: colour,
-      strokeWeightVal: strokeWeightVal
+      strokeWeightVal: strokeWeightVal,
     };
     exeCmd(command);
   }
@@ -183,18 +183,18 @@ window.drawSquare = function () {
       y: mousePos.y,
       size: 50,
       color: colour,
-      strokeWeightVal: strokeWeightVal
+      strokeWeightVal: strokeWeightVal,
     };
     exeCmd(command);
   }
 };
 
-window.pencilDraw = function() {
+window.pencilDraw = function () {
   if (pencil.isDrawing) {
     pencil.draw(pmouseX, pmouseY, mouseX, mouseY);
     pencil.showMarkings();
   }
-}
+};
 
 // Function to clear the canvas
 window.clearCanvas = function () {
@@ -204,16 +204,15 @@ window.clearCanvas = function () {
 
 function saveCanvasImg() {
   saveCanvas(canvas, "myCanvas", "png");
-};
+}
 
 function saveCanvasGif() {
   const gif = new GIF({
     workers: 2,
     quality: 10,
     width: canvas.width,
-    height: canvas.height
+    height: canvas.height,
   });
-
 
   function drawFrame() {
     // Loop through each command
@@ -241,7 +240,7 @@ function saveCanvasGif() {
   drawFrame();
 
   // Render the GIF and open it in a new tab when finished
-  gif.on('finished', function(blob) {
+  gif.on("finished", function (blob) {
     window.open(URL.createObjectURL(blob));
   });
   gif.render();
